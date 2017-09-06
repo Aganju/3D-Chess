@@ -25,7 +25,7 @@ This application will have a single screen which has the game board and a sideba
 which opens to give the user the rules and an option to change the AI difficulty.
 At the top of the page will be a nav which links to Github and LinkedIn.
 
-![wireframes]()
+![wireframes](https://github.com/Aganju/3D-Chess/blob/master/docs/wireframe.jpg)
 
 ### Architecture and Technologies
 
@@ -58,5 +58,5 @@ entry file script
 This project is only getting started, with time, this project will grow to include:
 
 - [ ] A 3 tiered difficulty AI based on predictive search
-- [ ] Multiple implemented rulesets such as ![here](http://www.chessvariants.com/3d.dir/startrek.html) and ![here](https://sites.google.com/site/caroluschess/movies/star-trek/star-trek-3d-chess-rules
+- [ ] Multiple implemented rulesets such as [here](http://www.chessvariants.com/3d.dir/startrek.html) and [here](https://sites.google.com/site/caroluschess/movies/star-trek/star-trek-3d-chess-rules)
 - [ ] Live play using websockets
