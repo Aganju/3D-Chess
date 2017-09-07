@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+<meta charset="utf-8">
+<title>Hello...</title>
+<script type="text/javascript" src="js/three.min.js"></script>
+<script type="text/javascript" src="js/chessboard3.js"></script>
+<script type="text/javascript" src="js/OrbitControls.js"></script>
+<style type="text/css">
+
+
+</style>
+</head>
+
+<body>
+	<div id="boards" style="width: 1000px; height: 750px"></div>
+	<script> 
+		var boards = new ChessBoard3('boards', {
+	    draggable: true,
+	    dropOffBoard: 'snapback',
+	    sparePieces: true,
+	    showErrors: 'console',
+	   });
+	</script>
+
+</body>
+</html>
