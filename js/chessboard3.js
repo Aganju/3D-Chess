@@ -323,13 +323,13 @@
             if (cfg.hasOwnProperty('darkSquareColor') && typeof cfg.darkSquareColor === 'number') {
                 darkSquareColor = cfg.darkSquareColor;
             }
-            var darkSquareMaterial = new THREE.MeshPhongMaterial({color: new THREE.Color(darkSquareColor)});
+            var darkSquareMaterial = new THREE.MeshPhongMaterial({color: new THREE.Color(darkSquareColor), opacity: 0.7, transparent: true});
 
             var lightSquareColor= 0xf0d9b5;
             if (cfg.hasOwnProperty('lightSquareColor') && typeof cfg.lightSquareColor === 'number') {
                 lightSquareColor = cfg.lightSquareColor;
             }
-            var lightSquareMaterial = new THREE.MeshPhongMaterial({color: new THREE.Color(lightSquareColor)});
+            var lightSquareMaterial = new THREE.MeshPhongMaterial({color: new THREE.Color(lightSquareColor), opacity: 0.7, transparent: true});
             /*
             darkSquareMaterial.specularMap = THREE.ImageUtils.loadTexture("img/iris.png", undefined, function() {SPECULAR_MAPS_PENDING--;};);
             lightSquareMaterial.specularMap = THREE.ImageUtils.loadTexture("img/grain.jpg", undefined, function() {SPECULAR_MAPS_PENDING--;};);
