@@ -710,6 +710,7 @@
                 geometry = GEOMETRIES[species];
                 mesh = new THREE.Mesh(geometry, material);
                 mesh.position.x = coords.x;
+                mesh.position.y = coords.y;
                 mesh.position.z = coords.z;
                 if (color === 'w') {
                     mesh.rotation.y = Math.PI;
