@@ -101,7 +101,7 @@
 
     function validOrdinarySquare(square) {
         if (typeof square !== 'string') return false;
-        return (square.search(/^[a-h][1-8]$/) !== -1);
+        return (square.search(/^[a-h]([1-9]|1[0-2])$/) !== -1);
     }
 
     function validSpareSquare(square) {
