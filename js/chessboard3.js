@@ -21,7 +21,7 @@
     ];
     var SQUARE_SIZE = 2;
     var CAMERA_POLAR_ANGLE = Math.PI / 4;
-    var CAMERA_DISTANCE = 30.25;
+    var CAMERA_DISTANCE = 40.25;
     var SPARE_POSITION = {
         sw1 : 'wK', sw2: 'wQ', sw3: 'wR', sw4: 'wB', sw5: 'wN', sw6: 'wP',
         sb1 : 'bK', sb2: 'bQ', sb3: 'bR', sb4: 'bB', sb5: 'bN', sb6: 'bP'
@@ -801,7 +801,8 @@
                         var squareMaterial = (((i % 2) === 0) ^ ((j % 2) === 0) ? lightSquareMaterial : darkSquareMaterial);
                         var squareGeometry = new THREE.BoxGeometry(2, 0.25, 2);
                         var squareMesh = new THREE.Mesh(squareGeometry, squareMaterial.clone());
-                        squareMesh.position.set(tx, Math.floor(i/4) * 3, tz);
+                        var boardOffset = Math.floor(i/4) * (SQUARE_SIZE) * 2;
+                        squareMesh.position.set(tx, Math.floor(i/4) * 7, tz + boardOffset);
                         squareGeometry.computeFaceNormals();
                         squareGeometry.computeVertexNormals();
                         squareMesh.receiveShadow = true;
@@ -987,7 +988,7 @@
                 } else if (validOrdinarySquare(square)) {
                     tx = SQUARE_SIZE * (square.charCodeAt(0) - 'a'.charCodeAt(0)) - 3.5 * SQUARE_SIZE;
                     tz = 3.5 * SQUARE_SIZE - SQUARE_SIZE * (square.charCodeAt(1) - '1'.charCodeAt(0));
-                    ty = Math.floor( (square.charCodeAt(1) - '1'.charCodeAt(0))/4) * 3;
+                    ty = Math.floor( (square.charCodeAt(1) - '1'.charCodeAt(0))/4) * 7;
                 }
                 console.log(ty);
                 return {
