@@ -1155,12 +1155,13 @@
                 return null;
             }
 
-            function isXZOnSquare(x_coord, z_coord) {
+            function isXZOnSquare(x_coord, z_coord, y_coord = 0) {
                 for (var sq in SQUARE_MESH_IDS) {
                     if (SQUARE_MESH_IDS.hasOwnProperty(sq)) {
                         var squareMesh = SCENE.getObjectById(SQUARE_MESH_IDS[sq]);
                         if (x_coord >= squareMesh.position.x - SQUARE_SIZE / 2
                             && x_coord < squareMesh.position.x + SQUARE_SIZE / 2
+                            && y_coord === squareMesh.position.y
                             && z_coord >= squareMesh.position.z - SQUARE_SIZE / 2
                             && z_coord < squareMesh.position.z + SQUARE_SIZE / 2) {
                             return sq;
@@ -1258,16 +1259,20 @@
                 }
 
                 // We didn't hit an actual piece mesh. Did we hit anything, like a square, empty or not?
-                var pos = projectOntoPlane(mouseX, mouseY, 0);
-                if (!pos) {
-                    return {
-                        source : 'offboard',
-                        location: 'offboard'
+                // Check the square on each plane
+                for( var q = 5; q >= 0; q-- ){
+                    var pos = projectOntoPlane(mouseX, mouseY, q * 3.5);
+                    if (!pos) {
+                        return {
+                            source : 'offboard',
+                            location: 'offboard'
+                        }
                     }
+                    sq = isXZOnSquare(pos.x, pos.z, pos.y);
+                    piece = pieceOnSquare(sq);
+                    mesh = SCENE.getObjectById(PIECE_MESH_IDS[sq]);
+                    if(sq !== 'offboard') break;    
                 }
-                sq = isXZOnSquare(pos.x, pos.z);
-                piece = pieceOnSquare(sq);
-                mesh = SCENE.getObjectById(PIECE_MESH_IDS[sq]);
                 return {
                     source : sq,
                     location : sq,
