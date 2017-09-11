@@ -487,7 +487,7 @@
                 if (cfg.hasOwnProperty('pieceSet') !== true ||
                     (typeof cfg.pieceSet !== 'string' &&
                     typeof cfg.pieceSet !== 'function')) {
-                    cfg.pieceSet = 'assets/chesspieces/iconic/{piece}.json';
+                    cfg.pieceSet = 'assets/chesspieces/classic/{piece}.json';
                 }
 
                 // rotate and zoom controls
@@ -974,7 +974,7 @@
             }
 
             function squareCoordinates(square) {
-                var tx, tz;
+                var tx, tz, ty = 0;
                 if (validSpareSquare(square)) {
                     var u = square.charCodeAt(2) - '1'.charCodeAt(0);
                     tx = SQUARE_SIZE * (4 * u - 10) / 3;
@@ -987,9 +987,12 @@
                 } else if (validOrdinarySquare(square)) {
                     tx = SQUARE_SIZE * (square.charCodeAt(0) - 'a'.charCodeAt(0)) - 3.5 * SQUARE_SIZE;
                     tz = 3.5 * SQUARE_SIZE - SQUARE_SIZE * (square.charCodeAt(1) - '1'.charCodeAt(0));
+                    ty = Math.floor( (square.charCodeAt(1) - '1'.charCodeAt(0))/4) * 3;
                 }
+                console.log(ty);
                 return {
                     x : tx,
+                    y : ty,
                     z : tz
                 }
             }
