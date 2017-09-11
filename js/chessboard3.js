@@ -878,10 +878,11 @@
                     SCENE.add(pieceMesh);
                 }
                 if (destSquareMesh && pieceMesh) {
-                    var tx_src = pieceMesh.position.x, tz_src = pieceMesh.position.z;
-                    var tx_dest = destSquareMesh.position.x, tz_dest = destSquareMesh.position.z;
+                    var tx_src = pieceMesh.position.x,  ty_src = pieceMesh.position.y, tz_src = pieceMesh.position.z;
+                    var tx_dest = destSquareMesh.position.x, ty_dest = destSquareMesh.position.y, tz_dest = destSquareMesh.position.z;
                     startTween(function(t) {
                         pieceMesh.position.x = tx_src + t * (tx_dest - tx_src);
+                        pieceMesh.position.y = ty_src + t * (ty_dest - ty_src);
                         pieceMesh.position.z = tz_src + t * (tz_dest - tz_src);
                     }, function() {
                         PIECE_MESH_IDS[dest] = pieceMesh.id;
