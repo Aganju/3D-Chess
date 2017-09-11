@@ -473,7 +473,11 @@
                 if (cfg.dropOffBoard !== 'trash') {
                     cfg.dropOffBoard = 'snapback';
                 }
-
+                
+                if (cfg.hasOwnProperty('moveableBoards') !== true) {
+                    cfg.moveableBoards = { b1: 'QL1', b2: 'KL1', b3: 'QL6', b4: 'KL6'};
+                }
+                
                 if (cfg.sparePieces !== true) {
                     cfg.sparePieces = false;
                 }
@@ -754,15 +758,15 @@
                     LABELS = [];
                     var textGeom;
                     var label;
-                    var columnLabelText = "abcdefgh".split('');
-                    for (var i = 0; i < 8; i++) {
+                    var columnLabelText = "zabcde".split('');
+                    for (var i = 0; i < 6; i++) {
                         textGeom = new THREE.TextGeometry(columnLabelText[i], opts);
                         textGeom.computeBoundingBox();
                         textGeom.computeVertexNormals();
                         label = new THREE.Mesh(textGeom, RANK_1_TEXT_MATERIAL);
                         label.position.x = 2 * i - 7 - opts.size/2;
                         label.position.y = -0.5;
-                        label.position.z = -9;
+                        label.position.z = -13;
                         LABELS.push(label);
                         SCENE.add(label);
                         label = new THREE.Mesh(textGeom, RANK_8_TEXT_MATERIAL);
@@ -772,19 +776,19 @@
                         LABELS.push(label);
                         SCENE.add(label);
                     }
-                    var rankLabelText = "12345678".split('');
-                    for (i = 0; i < 8; i++) {
+                    var rankLabelText = "0123456789".split('');
+                    for (i = 0; i < 10; i++) {
                         textGeom = new THREE.TextGeometry(rankLabelText[i], opts);
                         label = new THREE.Mesh(textGeom, FILE_A_TEXT_MATERIAL);
                         label.position.x = -9;
                         label.position.y = -0.5;
-                        label.position.z = -7 - opts.size / 2 + 2 * (7 - i);
+                        label.position.z = -6.7 - opts.size / 2 + 2 * (7 - i);
                         LABELS.push(label);
                         SCENE.add(label);
                         label = new THREE.Mesh(textGeom, FILE_H_TEXT_MATERIAL);
-                        label.position.x = 9;
+                        label.position.x = 4.5;
                         label.position.y =  -0.5;
-                        label.position.z = -7 - opts.size / 2 + 2 * (7 - i);
+                        label.position.z = -6.7 - opts.size / 2 + 2 * (7 - i);
                         LABELS.push(label);
                         SCENE.add(label);
                     }
@@ -794,10 +798,11 @@
             function buildBoard() {
                 var i;
                 for (i = 0; i < 12; i++) {
-                    var tz = 3.5 * SQUARE_SIZE - (SQUARE_SIZE * i);
-                    for (var j = 1; j < 5; j++) {
+                    var tz = 3.5 * SQUARE_SIZE - (SQUARE_SIZE * (i) );
+                    for (var j = 0; j < 6; j++) {
+                        if(j === 0 || j === 5 ) continue;
                         var tx = (SQUARE_SIZE * j) - 3.5 * SQUARE_SIZE;
-                        var square = 'abcdefgh'.charAt(j) + (i + 1);
+                        var square = 'zabcde'.charAt(j) + (i + 1);
                         var squareMaterial = (((i % 2) === 0) ^ ((j % 2) === 0) ? lightSquareMaterial : darkSquareMaterial);
                         var squareGeometry = new THREE.BoxGeometry(2, 0.25, 2);
                         var squareMesh = new THREE.Mesh(squareGeometry, squareMaterial.clone());
@@ -811,7 +816,7 @@
                         SCENE.add(squareMesh);
                     }
                 }
-
+                
                 if (cfg.showNotation) {
                     addLabelsToScene();
                 }
