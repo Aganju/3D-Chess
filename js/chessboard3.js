@@ -14,7 +14,7 @@
     // ---------------------------------------------------------------------//
     var MINIMUM_THREEJS_REVISION = 71;
     var START_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR';
-    var COLUMNS = "abcdefgh".split('');
+    var COLUMNS = "zabcde".split('');
     var LIGHT_POSITIONS = [
         [50, 40, 30],
         [-50, 0, -30] // place at y=0 to avoid double phong reflection off the board
@@ -101,7 +101,7 @@
 
     function validOrdinarySquare(square) {
         if (typeof square !== 'string') return false;
-        return (square.search(/((^[KQ]L([a-e]|z)[1-9])|^([a-e]|z)[1-9][WBN])$/) !== -1);
+        return (square.search(/((^[KQ]L[1-6]([a-e]|z)[0-9])|^([a-e]|z)[1-9][WBN])$/) !== -1);
     }
 
     function validSpareSquare(square) {
@@ -826,7 +826,7 @@
                         var tz = 3.5 * SQUARE_SIZE - (SQUARE_SIZE * (i ) );
                         for (var j = offsetX; j < offsetX + 2; j++) {
                             var tx = (SQUARE_SIZE * j) - 3.5 * SQUARE_SIZE;
-                            var square = bdLoc.charAt(0) + 'L' + 'zabcde'.charAt(j) +  (i > 3 ? i -  Math.floor(i/4) *2 : i);
+                            var square = bdLoc + 'zabcde'.charAt(j) +  (i > 3 ? i -  Math.floor(i/4) *2 : i);
                             var squareMaterial = (((i % 2) === 0) ^ ((j % 2) === 0) ? lightSquareMaterial : darkSquareMaterial);
                             var squareGeometry = new THREE.BoxGeometry(2, 0.25, 2);
                             var squareMesh = new THREE.Mesh(squareGeometry, squareMaterial.clone());
@@ -1018,11 +1018,12 @@
                         tz = -5 * SQUARE_SIZE;
                     }
                 } else if (validOrdinarySquare(square)) {
-                    tx = SQUARE_SIZE * (square.charCodeAt(0) - 'a'.charCodeAt(0)) - 3.5 * SQUARE_SIZE;
-                    tz = 3.5 * SQUARE_SIZE - SQUARE_SIZE * (square.charCodeAt(1) - '1'.charCodeAt(0));
-                    ty = Math.floor( (square.charCodeAt(1) - '1'.charCodeAt(0))/4) * 7;
+                    var boardHeight = square.charAt(1) === 'L' ? Math.floor(square.charAt(2) / 2.5) * 2 + 1 :'WNB'.split('').indexOf(square.charAt(2)) * 2;
+                    var tempSq = square.charAt(1) === 'L' ? square.slice(3) : square
+                    tx = SQUARE_SIZE * ((tempSq.charCodeAt(0) - 'a'.charCodeAt(0) + 1) % 26) - 3.5 * SQUARE_SIZE;
+                    tz = 3.5 * SQUARE_SIZE - SQUARE_SIZE * (tempSq.charCodeAt(1) - '0'.charCodeAt(0));
+                    ty = boardHeight * 3.5;
                 }
-                console.log(ty);
                 return {
                     x : tx,
                     y : ty,
@@ -1458,9 +1459,18 @@
             function setCurrentPosition(position) {
                 var oldPos = deepCopy(CURRENT_POSITION);
                 var newPos = deepCopy(position);
-                var oldFen = objToFen(oldPos);
-                var newFen = objToFen(newPos);
-                if (oldFen === newFen) {
+                console.log(oldPos);
+                console.log(newPos);
+                var checkObjEquivalence = function(obj1, obj2){
+                    for(var sq in obj1){
+                        if(obj1[sq] !== obj2[sq]) return false;
+                    }
+                    for(var sq in obj2){
+                        if(obj1[sq] !== obj2[sq]) return false;
+                    }
+                    return true;
+                }
+                if (checkObjEquivalence(oldPos, newPos)) {
                     return;
                 }
                 if (cfg.hasOwnProperty('onChange') && typeof cfg.onChange === 'function') {
