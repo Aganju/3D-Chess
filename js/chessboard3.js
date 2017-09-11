@@ -1448,7 +1448,7 @@
                     var highlight_geometry = new THREE.TorusGeometry(1.2 * SQUARE_SIZE / 2, 0.1, 4, 4);
                     highlightMesh = new THREE.Mesh(highlight_geometry, new THREE.MeshBasicMaterial({color: new THREE.Color(color)}));
                     highlightMesh.position.x = squareMesh.position.x;
-                    highlightMesh.position.y = 0;
+                    highlightMesh.position.y = squareMesh.position.y;
                     highlightMesh.position.z = squareMesh.position.z;
                     highlightMesh.rotation.z = Math.PI / 4;
                     highlightMesh.rotation.x = Math.PI / 2;
