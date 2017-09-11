@@ -101,7 +101,7 @@
 
     function validOrdinarySquare(square) {
         if (typeof square !== 'string') return false;
-        return (square.search(/^[a-h]([1-9]|1[0-2])$/) !== -1);
+        return (square.search(/((^[KQ]L([a-e]|z)[1-9])|^([a-e]|z)[1-9][WBN])$/) !== -1);
     }
 
     function validSpareSquare(square) {
@@ -798,12 +798,12 @@
             function buildBoard() {
                 var i;
                 for (i = 0; i < 12; i++) {
-                    var tz = 3.5 * SQUARE_SIZE - (SQUARE_SIZE * (i) );
+                    var tz = 3.5 * SQUARE_SIZE - (SQUARE_SIZE * (i + 1) );
                     for (var j = 0; j < 6; j++) {
                         if(j === 0 || j === 5 ) continue;
                         var tx = (SQUARE_SIZE * j) - 3.5 * SQUARE_SIZE;
-                        var square = 'zabcde'.charAt(j) + (i + 1);
-                        var squareMaterial = (((i % 2) === 0) ^ ((j % 2) === 0) ? lightSquareMaterial : darkSquareMaterial);
+                        var square = 'zabcde'.charAt(j) +  (i > 3 ? (i + 1) -  Math.floor(i/4) *2 : (i + 1)) + 'WNB'.charAt(Math.floor(i/4));
+                        var squareMaterial = (((i % 2) === 0) ^ ((j % 2) === 0) ? darkSquareMaterial : lightSquareMaterial);
                         var squareGeometry = new THREE.BoxGeometry(2, 0.25, 2);
                         var squareMesh = new THREE.Mesh(squareGeometry, squareMaterial.clone());
                         var boardOffset = Math.floor(i/4) * (SQUARE_SIZE) * 2;
@@ -815,6 +815,32 @@
                         squareMesh.tag = square;
                         SCENE.add(squareMesh);
                     }
+                }
+                
+                for(var mboard in cfg.moveableBoards){
+                    var bdLoc = cfg.moveableBoards[mboard];
+                    var offsetX = bdLoc.charAt(0) === 'Q' ? 0 : 4;
+                    var offsetZ = bdLoc.charAt(2) % 2 === 0 ? 4 * bdLoc.charAt(2) / 2 + 2 : 2 * (bdLoc.charAt(2) - 1) ;
+                    
+                    for (i = offsetZ; i < offsetZ + 2; i++) {
+                        var tz = 3.5 * SQUARE_SIZE - (SQUARE_SIZE * (i ) );
+                        for (var j = offsetX; j < offsetX + 2; j++) {
+                            var tx = (SQUARE_SIZE * j) - 3.5 * SQUARE_SIZE;
+                            var square = bdLoc.charAt(0) + 'L' + 'zabcde'.charAt(j) +  (i > 3 ? i -  Math.floor(i/4) *2 : i);
+                            var squareMaterial = (((i % 2) === 0) ^ ((j % 2) === 0) ? lightSquareMaterial : darkSquareMaterial);
+                            var squareGeometry = new THREE.BoxGeometry(2, 0.25, 2);
+                            var squareMesh = new THREE.Mesh(squareGeometry, squareMaterial.clone());
+                            var boardOffset = Math.floor(i/4) * (SQUARE_SIZE) * 2;
+                            squareMesh.position.set(tx, Math.floor(bdLoc.charAt(2) / 2.5) * 7 + 3.5, tz + boardOffset);
+                            squareGeometry.computeFaceNormals();
+                            squareGeometry.computeVertexNormals();
+                            squareMesh.receiveShadow = true;
+                            SQUARE_MESH_IDS[square] = squareMesh.id;
+                            squareMesh.tag = square;
+                            SCENE.add(squareMesh);
+                        }
+                    }
+                    
                 }
                 
                 if (cfg.showNotation) {
