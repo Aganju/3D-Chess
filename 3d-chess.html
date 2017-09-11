@@ -14,12 +14,13 @@
 </head>
 
 <body>
-	<div id="boards" style="width: 1000px; height: 750px"></div>
+	<div id="boards" style="width: 1332px; height: 999px"></div>
 	<script> 
 		var boards = new ChessBoard3('boards', {
 	    draggable: true,
+	    moveSpeed: 10,
+	    position: 'start',
 	    dropOffBoard: 'snapback',
-	    sparePieces: true,
 	    showErrors: 'console',
 	   });
 	</script>

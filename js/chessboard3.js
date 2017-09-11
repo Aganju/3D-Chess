@@ -265,7 +265,40 @@
 
             cfg = cfg || {};
 
-            var START_POSITION = fenToObj(START_FEN);
+            var START_POSITION = {
+                QL1z0: 'wR', 
+                QL1a0: 'wQ',
+                QL1d0: 'wK',
+                QL1e0: 'wR',
+                QL1z1: 'wP', 
+                QL1a1: 'wP',
+                QL1d1: 'wP',
+                QL1e1: 'wP',
+                a1W: 'wN',
+                b1W: 'wB',
+                c1W: 'wB',
+                d1W: 'wN',
+                a2W: 'wP',
+                b2W: 'wP',
+                c2W: 'wP',
+                d2W: 'wP',
+                QL6z9: 'bR', 
+                QL6a9: 'bQ',
+                QL6d9: 'bK',
+                QL6e9: 'bR',
+                QL6z8: 'bP', 
+                QL6a8: 'bP',
+                QL6d8: 'bP',
+                QL6e8: 'bP',
+                a8B: 'bN',
+                b8B: 'bB',
+                c8B: 'bB',
+                d8B: 'bN',
+                a7B: 'bP',
+                b7B: 'bP',
+                c7B: 'bP',
+                d7B: 'bP',
+                };
 
             var containerEl;
             var addedToContainer = false;
@@ -1128,8 +1161,8 @@
                 // find all the "move" animations
                 for (i in pos2) {
                     if (pos2.hasOwnProperty(i) !== true) continue;
-                    var closestPiece = findClosestPiece(pos1, pos2[i], i);
-                    if (closestPiece !== false) {
+                    var closestPiece = pieceOnSquare(pos1[i]);
+                    if (closestPiece) {
                         animations.push({
                             type: 'move',
                             source: closestPiece,
