@@ -268,12 +268,12 @@
             var START_POSITION = {
                 QL1z0: 'wR', 
                 QL1a0: 'wQ',
-                QL1d0: 'wK',
-                QL1e0: 'wR',
+                KL1d0: 'wK',
+                KL1e0: 'wR',
                 QL1z1: 'wP', 
                 QL1a1: 'wP',
-                QL1d1: 'wP',
-                QL1e1: 'wP',
+                KL1d1: 'wP',
+                KL1e1: 'wP',
                 a1W: 'wN',
                 b1W: 'wB',
                 c1W: 'wB',
@@ -284,12 +284,12 @@
                 d2W: 'wP',
                 QL6z9: 'bR', 
                 QL6a9: 'bQ',
-                QL6d9: 'bK',
-                QL6e9: 'bR',
+                KL6d9: 'bK',
+                KL6e9: 'bR',
                 QL6z8: 'bP', 
                 QL6a8: 'bP',
-                QL6d8: 'bP',
-                QL6e8: 'bP',
+                KL6d8: 'bP',
+                KL6e8: 'bP',
                 a8B: 'bN',
                 b8B: 'bB',
                 c8B: 'bB',
@@ -1492,8 +1492,6 @@
             function setCurrentPosition(position) {
                 var oldPos = deepCopy(CURRENT_POSITION);
                 var newPos = deepCopy(position);
-                console.log(oldPos);
-                console.log(newPos);
                 var checkObjEquivalence = function(obj1, obj2){
                     for(var sq in obj1){
                         if(obj1[sq] !== obj2[sq]) return false;
@@ -1870,7 +1868,7 @@
                 }
                 var coords = offset(e, useTouchObject);
                 var dragged = raycast(coords.x, coords.y);
-                if (dragged && dragged.piece !== undefined) {
+                if (dragged && dragged.source !== 'offboard') {
                     DRAG_INFO = dragged;
                     MOUSEOVER_SQUARE = 'offboard';
                     beginDraggingPiece();
