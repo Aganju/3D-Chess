@@ -1272,6 +1272,8 @@
                     var pieceBoundingBox = GEOMETRIES[piece.charAt(1)].boundingBox.clone();
                     pieceBoundingBox.min.x += pieceMesh.position.x;
                     pieceBoundingBox.max.x += pieceMesh.position.x;
+                    pieceBoundingBox.min.y += pieceMesh.position.y;
+                    pieceBoundingBox.max.y += pieceMesh.position.y;
                     pieceBoundingBox.min.z += pieceMesh.position.z;
                     pieceBoundingBox.max.z += pieceMesh.position.z;
 
