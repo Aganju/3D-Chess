@@ -16,12 +16,25 @@
 <body>
 	<div id="boards" style="width: 1332px; height: 999px"></div>
 	<script> 
+		let selectedSquare;
+	    const pickPiece = (src, piece, currPos, currOrientation) => {
+	    	boards.greySquare(src);
+			if(selectedSquare ){
+				boards.move(selectedSquare + '-' + src);		
+				selectedSquare = null;
+				boards.removeGreySquares();
+			} 
+			else if (piece) selectedSquare= src;
+			return false;
+	    }
+	   
 		var boards = new ChessBoard3('boards', {
-	    draggable: true,
-	    moveSpeed: 10,
-	    position: 'start',
-	    dropOffBoard: 'snapback',
-	    showErrors: 'console',
+			draggable: true,
+			appearSpeed: 10,
+			moveSpeed: 2000,
+			position: 'start',
+			onDragStart: pickPiece,
+			showErrors: 'console',
 	   });
 	</script>
 
