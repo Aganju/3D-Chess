@@ -655,7 +655,19 @@
                 RENDERER.domElement.addEventListener( 'mousedown', mouseDown, true );
                 RENDERER.domElement.addEventListener( 'mousemove', mouseMove, true);
                 RENDERER.domElement.addEventListener( 'mouseup', mouseUp, true);
-
+                
+                var stars = new THREE.Geometry();
+				for ( var i = 0; i < 10000; i ++ ) {
+					var vertex = new THREE.Vector3();
+					vertex.x = THREE.Math.randFloatSpread( 2000 );
+					vertex.y = THREE.Math.randFloatSpread( 2000 );
+					vertex.z = THREE.Math.randFloatSpread( 2000 );
+					if(!(Math.abs(vertex.x) < 30 && Math.abs(vertex.y) < 30 && Math.abs(vertex.z) < 100)){
+					    stars.vertices.push( vertex );
+				    }
+				}
+				var particles = new THREE.Points( stars, new THREE.PointsMaterial( { color: 0x888888 } ) );
+				SCENE.add( particles );
 
                 if ('ontouchstart' in document.documentElement) {
                     RENDERER.domElement.addEventListener('touchstart', function(e) {
