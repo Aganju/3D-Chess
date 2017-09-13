@@ -27,7 +27,7 @@
 	<script> 
 		let selectedSquare;
 	    const pickPiece = (src, piece, currPos, currOrientation) => {
-	    	boards.greySquare(src);
+	    	boards.greySquare(src, 0xFFFFFF);
 			if(selectedSquare ){
 				boards.move(selectedSquare + '-' + src);		
 				selectedSquare = null;

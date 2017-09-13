@@ -1694,8 +1694,8 @@
             };
 
             // highlight a square from client code
-            widget.greySquare = function(sq) {
-                USER_HIGHLIGHT_MESHES.push(addSquareHighlight(sq, 0x404040));
+            widget.greySquare = function(sq, color = 0x404040) {
+                USER_HIGHLIGHT_MESHES.push(addSquareHighlight(sq, color));
                 RENDER_FLAG = true;
             };
 
