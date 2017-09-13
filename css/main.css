@@ -3,6 +3,8 @@ body{
     padding: 0 20px 0;
     display: flex;
     flex-wrap: wrap;
+    background: #000;
+    color: white;
     justify-content: center;
 }
 
@@ -15,11 +17,14 @@ body{
 
 h1{
     font-size: 45px;    
-    color: #551a8b;
 }
 
 #links{
     font-size: 50px;
+}
+
+.fa{
+    color: white;
 }
 
 #links a{
@@ -31,7 +36,7 @@ h1{
 }
 
 #controls li{
-    border: 1px solid #551a8b;
+    border: 1px solid #ffffff;
     border-radius: 3px;
     padding: 5px;
     
@@ -39,5 +44,6 @@ h1{
 
 #controls li:hover{
     cursor: pointer;    
-    background-color: #e5d9f1;
+    background-color: #fff;
+    color: #000;
 }
