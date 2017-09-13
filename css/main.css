@@ -1,0 +1,43 @@
+body{
+    font-family: sans-serif;
+    padding: 0 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+#header{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1{
+    font-size: 45px;    
+    color: #551a8b;
+}
+
+#links{
+    font-size: 50px;
+}
+
+#links a{
+    margin: 20px;
+}
+
+#controls{
+    list-style: none;
+}
+
+#controls li{
+    border: 1px solid #551a8b;
+    border-radius: 3px;
+    padding: 5px;
+    
+}
+
+#controls li:hover{
+    cursor: pointer;    
+    background-color: #e5d9f1;
+}
