@@ -634,7 +634,7 @@
                 SCENE = new THREE.Scene();
                 //SCENE.add(new THREE.AxisHelper(3));
 
-                CAMERA = new THREE.PerspectiveCamera(60, containerEl.clientWidth / containerEl.clientHeight, 0.1, 1000);
+                CAMERA = new THREE.PerspectiveCamera(80, containerEl.clientWidth / containerEl.clientHeight, 0.1, 1000);
                 CAMERA.aspectRatio = ASPECT_RATIO;
 
                 if (cfg.sparePieces === false) {
