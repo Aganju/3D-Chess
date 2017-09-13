@@ -679,7 +679,7 @@
                         }
                         if (cfg.zoomControls) {
                             CAMERA_CONTROLS.minDistance = 12;
-                            CAMERA_CONTROLS.maxDistance = 22;
+                            CAMERA_CONTROLS.maxDistance = 82;
                             CAMERA_CONTROLS.enableZoom = true;
                         } else {
                             CAMERA_CONTROLS.enableZoom = false;
