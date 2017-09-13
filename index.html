@@ -2,19 +2,28 @@
 <html lang="en-us">
 
 <head>
-<meta charset="utf-8">
-<title>3D Chess</title>
-<script type="text/javascript" src="js/three.min.js"></script>
-<script type="text/javascript" src="js/chessboard3.js"></script>
-<script type="text/javascript" src="js/OrbitControls.js"></script>
-<style type="text/css">
-
-
-</style>
+	<meta charset="utf-8">
+	<title>3D Chess</title>
+	<script type="text/javascript" src="js/three.min.js"></script>
+	<script type="text/javascript" src="js/chessboard3.js"></script>
+	<script type="text/javascript" src="js/OrbitControls.js"></script>
+	<link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
-	<div id="boards" style="width: 1332px; height: 999px"></div>
+	<div id='header'>
+		<h1>3D Chess</h1>
+		<div id='links'>
+			<a href="http://www.linkedin.com/in/omayemi-agbeyegbe-ba3a4676"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+			<a href="http://github.com/Aganju"><i class="fa fa-github" aria-hidden="true"></i></a>
+		</div>	
+	</div>
+	
+	<div id="boards" style="width: 1000px; height: 750px"></div>
+	<ul id="controls">
+		<li>Free Place</li>
+	</ul>
 	<script> 
 		let selectedSquare;
 	    const pickPiece = (src, piece, currPos, currOrientation) => {
@@ -30,11 +39,10 @@
 	   
 		var boards = new ChessBoard3('boards', {
 			draggable: true,
-			appearSpeed: 10,
-			moveSpeed: 2000,
 			position: 'start',
 			onDragStart: pickPiece,
 			showErrors: 'console',
+			backgroundColor: 0xe5d9f1
 	   });
 	</script>
 
