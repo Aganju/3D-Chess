@@ -21,7 +21,7 @@
     ];
     var SQUARE_SIZE = 2;
     var CAMERA_POLAR_ANGLE = Math.PI / 4;
-    var CAMERA_DISTANCE = 40.25;
+    var CAMERA_DISTANCE = 42.25;
     var SPARE_POSITION = {
         sw1 : 'wK', sw2: 'wQ', sw3: 'wR', sw4: 'wB', sw5: 'wN', sw6: 'wP',
         sb1 : 'bK', sb2: 'bQ', sb3: 'bR', sb4: 'bB', sb5: 'bN', sb6: 'bP'
@@ -524,7 +524,7 @@
                 if (cfg.hasOwnProperty('pieceSet') !== true ||
                     (typeof cfg.pieceSet !== 'string' &&
                     typeof cfg.pieceSet !== 'function')) {
-                    cfg.pieceSet = 'assets/chesspieces/classic/{piece}.json';
+                    cfg.pieceSet = 'assets/chesspieces/mueller/{piece}.json';
                 }
 
                 // rotate and zoom controls
@@ -634,7 +634,7 @@
                 SCENE = new THREE.Scene();
                 //SCENE.add(new THREE.AxisHelper(3));
 
-                CAMERA = new THREE.PerspectiveCamera(80, containerEl.clientWidth / containerEl.clientHeight, 0.1, 1000);
+                CAMERA = new THREE.PerspectiveCamera(50, containerEl.clientWidth / containerEl.clientHeight, 0.1, 1000);
                 CAMERA.aspectRatio = ASPECT_RATIO;
 
                 if (cfg.sparePieces === false) {
@@ -684,8 +684,8 @@
                         CAMERA_CONTROLS = new THREE.OrbitControls(CAMERA, RENDERER.domElement, RENDERER.domElement);
                         CAMERA_CONTROLS.enablePan = false;
                         if (cfg.rotateControls) {
-                            CAMERA_CONTROLS.minPolarAngle = Math.PI / 2 * 0.1;
-                            CAMERA_CONTROLS.maxPolarAngle = Math.PI / 2 * 0.8;
+                            CAMERA_CONTROLS.minPolarAngle = 0;
+                            CAMERA_CONTROLS.maxPolarAngle = Math.PI / 2 * 1.1;
                         } else {
                             CAMERA_CONTROLS.noRotate = true;
                         }
@@ -696,7 +696,8 @@
                         } else {
                             CAMERA_CONTROLS.enableZoom = false;
                         }
-                        CAMERA_CONTROLS.target.y = -3;
+                        CAMERA_CONTROLS.target.y = 8.5;
+                        CAMERA_CONTROLS.target.z = -2;
                         CAMERA_CONTROLS.enabled = true;
                     }
                 }
