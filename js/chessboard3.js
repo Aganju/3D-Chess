@@ -266,11 +266,11 @@
             cfg = cfg || {};
 
             var START_POSITION = {
-                QL1z0: 'wR', 
+                QL1z0: 'wR',
                 QL1a0: 'wQ',
                 KL1d0: 'wK',
                 KL1e0: 'wR',
-                QL1z1: 'wP', 
+                QL1z1: 'wP',
                 QL1a1: 'wP',
                 KL1d1: 'wP',
                 KL1e1: 'wP',
@@ -282,11 +282,11 @@
                 b2W: 'wP',
                 c2W: 'wP',
                 d2W: 'wP',
-                QL6z9: 'bR', 
+                QL6z9: 'bR',
                 QL6a9: 'bQ',
                 KL6d9: 'bK',
                 KL6e9: 'bR',
-                QL6z8: 'bP', 
+                QL6z8: 'bP',
                 QL6a8: 'bP',
                 KL6d8: 'bP',
                 KL6e8: 'bP',
@@ -506,11 +506,11 @@
                 if (cfg.dropOffBoard !== 'trash') {
                     cfg.dropOffBoard = 'snapback';
                 }
-                
+
                 if (cfg.hasOwnProperty('moveableBoards') !== true) {
                     cfg.moveableBoards = { b1: 'QL1', b2: 'KL1', b3: 'QL6', b4: 'KL6'};
                 }
-                
+
                 if (cfg.sparePieces !== true) {
                     cfg.sparePieces = false;
                 }
@@ -655,7 +655,7 @@
                 RENDERER.domElement.addEventListener( 'mousedown', mouseDown, true );
                 RENDERER.domElement.addEventListener( 'mousemove', mouseMove, true);
                 RENDERER.domElement.addEventListener( 'mouseup', mouseUp, true);
-                
+
                 var stars = new THREE.Geometry();
 				for ( var i = 0; i < 10000; i ++ ) {
 					var vertex = new THREE.Vector3();
@@ -845,8 +845,7 @@
                 var i;
                 for (i = 0; i < 12; i++) {
                     var tz = 3.5 * SQUARE_SIZE - (SQUARE_SIZE * (i + 1) );
-                    for (var j = 0; j < 6; j++) {
-                        if(j === 0 || j === 5 ) continue;
+                    for (var j = 1; j < 5; j++) {
                         var tx = (SQUARE_SIZE * j) - 3.5 * SQUARE_SIZE;
                         var square = 'zabcde'.charAt(j) +  (i > 3 ? (i + 1) -  Math.floor(i/4) *2 : (i + 1)) + 'WNB'.charAt(Math.floor(i/4));
                         var squareMaterial = (((i % 2) === 0) ^ ((j % 2) === 0) ? darkSquareMaterial : lightSquareMaterial);
@@ -862,12 +861,12 @@
                         SCENE.add(squareMesh);
                     }
                 }
-                
+
                 for(var mboard in cfg.moveableBoards){
                     var bdLoc = cfg.moveableBoards[mboard];
                     var offsetX = bdLoc.charAt(0) === 'Q' ? 0 : 4;
                     var offsetZ = bdLoc.charAt(2) % 2 === 0 ? 4 * bdLoc.charAt(2) / 2 + 2 : 2 * (bdLoc.charAt(2) - 1) ;
-                    
+
                     for (i = offsetZ; i < offsetZ + 2; i++) {
                         var tz = 3.5 * SQUARE_SIZE - (SQUARE_SIZE * (i ) );
                         for (var j = offsetX; j < offsetX + 2; j++) {
@@ -886,9 +885,9 @@
                             SCENE.add(squareMesh);
                         }
                     }
-                    
+
                 }
-                
+
                 if (cfg.showNotation) {
                     addLabelsToScene();
                 }
@@ -1351,7 +1350,7 @@
                     sq = isXZOnSquare(pos.x, pos.z, pos.y);
                     piece = pieceOnSquare(sq);
                     mesh = SCENE.getObjectById(PIECE_MESH_IDS[sq]);
-                    if(sq !== 'offboard') break;    
+                    if(sq !== 'offboard') break;
                 }
                 return {
                     source : sq,
