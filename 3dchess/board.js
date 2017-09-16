@@ -20,6 +20,21 @@ export default class Board{
     this.existingSquares = this.squareList(options.moveableBoards
                                             || ['QL1','KL1','QL6','KL6']);
     this.initializeBoard(position);
+    this.lastMoves = [];
+  }
+
+  move(move, store = true){
+    if (store) this.lastMoves.push(move);
+    const [startSq, endSq] = [...this.lastMoves.pop().split('-')];
+    this.pieces[endSq] = this.pieces[startSq];
+    this.pieces[endSq].position = endSq;
+    delete this.pieces[startSq];
+  }
+
+  undoLastMove(){
+    if (this.lastMoves.length === 0) return;
+    const [startSq, endSq] = [...this.lastMoves.pop().split('-')];
+    this.move(endSq + '-' + endSq, false);
   }
 
   initializeBoard(position){
