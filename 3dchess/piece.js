@@ -36,17 +36,13 @@ export default class Piece {
 
     const square = files[sqFile] + ranks[sqRank];
     //get same square at every level
-    return this.board.existingSquares[square];
+    return this.board.existingSquares[square] || [];
   }
 
   stepMoves(offsets) {
     let moves = [];
     offsets.forEach((offset)=>{
-      const squares = this.getSquares(offset);
-//if the file or rank is not on the board or the square does not exist currently
-      if(squares === undefined) return;
-
-      moves = moves.concat(squares);
+      moves = moves.concat(this.getSquares(offset));
     });
     return moves;
   }
@@ -62,7 +58,7 @@ export default class Piece {
       while(unblocked){
         const squares = this.getSquares([horizOffset, vertOffset]);
 
-        if(squares === undefined){
+        if(squares.length === 0){
           unblocked = false;
           continue;
         }
