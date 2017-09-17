@@ -1,9 +1,9 @@
-import Pawn from 'pawn.js';
-import King from 'king.js';
-import Queen from 'queen.js';
-import Rook from 'rook.js';
-import Knight from 'knight.js';
-import Bishop from 'bishop.js';
+import Pawn from './pawn.js';
+import King from './king.js';
+import Queen from './queen.js';
+import Rook from './rook.js';
+import Knight from './knight.js';
+import Bishop from './bishop.js';
 
 const CONSTANT_SQUARES = {};
 ['a','b','c','d'].forEach((file) => {
@@ -15,7 +15,7 @@ const CONSTANT_SQUARES = {};
 });
 
 export default class Board{
-  constructor(position, options){
+  constructor(position, options = {}){
     this.pieces = {};
     this.existingSquares = this.squareList(options.moveableBoards
                                             || ['QL1','KL1','QL6','KL6']);
@@ -23,19 +23,7 @@ export default class Board{
     this.lastMoves = [];
   }
 
-  move(move, store = true){
-    if (store) this.lastMoves.push(move);
-    const [startSq, endSq] = [...this.lastMoves.pop().split('-')];
-    this.pieces[endSq] = this.pieces[startSq];
-    this.pieces[endSq].position = endSq;
-    delete this.pieces[startSq];
-  }
 
-  undoLastMove(){
-    if (this.lastMoves.length === 0) return;
-    const [startSq, endSq] = [...this.lastMoves.pop().split('-')];
-    this.move(endSq + '-' + endSq, false);
-  }
 
   initializeBoard(position){
     Object.keys(position).forEach((square) => {
@@ -63,6 +51,24 @@ export default class Board{
 
       }
     });
+  }
+
+  resultsInCheck(move){
+    return false;
+  }
+  move(move, store = true){
+    if (store) this.lastMoves.push(move);
+    const [startSq, endSq] = [...this.lastMoves.pop().split('-')];
+    if(startSq === endSq) return;
+    this.pieces[endSq] = this.pieces[startSq];
+    this.pieces[endSq].square = endSq;
+    delete this.pieces[startSq];
+  }
+
+  undoLastMove(){
+    if (this.lastMoves.length === 0) return;
+    const [startSq, endSq] = [...this.lastMoves.pop().split('-')];
+    this.move(endSq + '-' + endSq, false);
   }
 
   squareList(moveableBoards){
