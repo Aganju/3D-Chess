@@ -27,19 +27,22 @@ export default class Piece {
     return this.square[1] === 'L' ? this.square[3] : this.square[0];
   }
 
-  stepMoves(offsets) {
-    let moves = [];
+  getSquares(offset){
     const files = 'zabcde';
     const ranks = '0123456789';
 
+    const sqFile = files.indexOf(this.file()) + offset[0];
+    const sqRank = ranks.indexOf(this.rank()) + offset[1];
+
+    const square = files[sqFile] + ranks[sqRank];
+    //get same square at every level
+    return this.board.existingSquares[square];
+  }
+
+  stepMoves(offsets) {
+    let moves = [];
     offsets.forEach((offset)=>{
-      const sqFile = files.indexOf(this.file()) + offset[0];
-      const sqRank = ranks.indexOf(this.rank()) + offset[1];
-
-      const square = files[sqFile] + ranks[sqRank];
-      //get same square at every level
-      const squares = this.board.existingSquares[square];
-
+      const squares = this.getSquares(offset);
 //if the file or rank is not on the board or the square does not exist currently
       if(squares === undefined) return;
 
@@ -50,20 +53,14 @@ export default class Piece {
 
   slideMoves(directions) {
     const moves = [];
-    const files = 'zabcde';
-    const ranks = '0123456789';
 
     directions.forEach((dir)=>{
-      let file = files.indexOf(this.file());
-      let rank = ranks.indexOf(this.rank());
+      let horizOffset = dir[0];
+      let vertOffset = dir[1];
+
       let unblocked = true;
       while(unblocked){
-        file += dir[0];
-        rank += dir[1];
-
-        const square = files[file] + ranks[rank];
-        //get same square at every level
-        const squares = this.board.existingSquares[square];
+        const squares = this.getSquares([horizOffset, vertOffset]);
 
         if(squares === undefined){
           unblocked = false;
@@ -75,6 +72,8 @@ export default class Piece {
             moves.push(squares[i]);
         }
 
+        horizOffset += dir[0];
+        vertOffset += dir[1];
       }
     });
     return moves;
