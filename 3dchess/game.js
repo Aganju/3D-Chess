@@ -5,10 +5,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const pickPiece = (src, piece, currPos, currOrientation) => {
     boards.greySquare(src, 0xFFFFFF);
     if(selectedSquare ){
-      board.move(selectedSquare + '-' + src);
-      boards.move(selectedSquare + '-' + src);
-      selectedSquare = null;
       boards.removeGreySquares();
+      if(src != selectedSquare){
+        board.move(selectedSquare + '-' + src);
+        boards.move(selectedSquare + '-' + src);
+      }
+      selectedSquare = null;
     }
     else if (piece) {
       board.pieces[src].validMoves().forEach((sq) => boards.greySquare(sq, 0xFFF000));
