@@ -19,6 +19,7 @@ export default class Board{
     this.pieces = {};
     this.existingSquares = this.squareList(options.moveableBoards
                                             || ['QL1','KL1','QL6','KL6']);
+    this.kings = {};
     this.initializeBoard(position);
     this.lastMoves = [];
   }
@@ -33,7 +34,9 @@ export default class Board{
           this.pieces[square] = new Pawn(square, color, this);
           break;
         case 'K':
+        //keep reference to kings to save time on move into check validation
           this.pieces[square] = new King(square, color, this);
+          this.kings[color] = this.pieces[square];
           break;
         case 'Q':
           this.pieces[square] = new Queen(square, color, this);
@@ -54,12 +57,78 @@ export default class Board{
   }
 
   resultsInCheck(move){
+    const pieceColor = this.pieces[move.split('-')[0]].color;
+    const king = this.kings[pieceColor];
+
+    const straightOffsets = [ [0, 1], [1, 0], [0, -1], [-1, 0]  ];
+    const diagOffsets = [ [1, 1], [-1, 1], [1, -1], [-1, -1] ];
+    const knightOffsets = [ [ 1, -2], [ 1,  2], [-1, -2],  [-2, -1],
+                            [ 2, -1], [ 2,  1], [-2,  1],  [-1,  2] ];
+    const pawnDir = king.color === 'w' ? 1 : -1;
+    const stepOffsets = [ [1, pawnDir], [-1, pawnDir] ].concat(knightOffsets);
+
+    const checkForPiece = (squares, piece) => {
+      if(squares.length !== 0){
+          const lastSquare = squares[squares.length -1];
+          const lastSquares = this.existingSquares[lastSquare[1] === 'L' ?
+              lastSquare.substr(3, 5) : lastSquare.substr(0, 2)];
+
+          for(let j = 0; j < lastSquares.length; j++){
+            const possPiece = this.pieces[lastSquares[j]];
+            if(possPiece && possPiece.color !== king.color){
+              const pieceType = possPiece.constructor.name;
+              if(pieceType === piece ||
+                  ( (piece === 'Rook' || piece === 'Bishop')
+                  && pieceType === 'Queen' )
+               ) return true;
+            }
+
+          }
+      }
+      return false;
+    };
+
+    this.move(move);
+
+    for(let i = 0; i < 4; i++){
+      const straightMoves = king.slideMoves([straightOffsets[i]]);
+      const diagMoves = king.slideMoves([diagOffsets[i]]);
+
+      if(checkForPiece(straightMoves, 'Rook') || checkForPiece(diagMoves, 'Bishop')){
+        this.undoLastMove();
+        return true;
+      }
+
+    }
+
+    for(let i = 0; i < stepOffsets.length; i++){
+      const piece = i < 2 ? 'Pawn' : 'Knight';
+      if (checkForPiece(king.getSquares(stepOffsets[i]), piece)){
+        this.undoLastMove();
+        return true;
+      }
+    }
+
+    //if it's the kings move then his moveset might include the other king
+    if(this.pieces[move.split('-')[1]] === king){
+      const kingMoves = king.moves();
+      for(let i = 0; i < kingMoves.length; i++){
+        const piece = this.pieces[kingMoves[i]];
+        if(piece && piece.constructor.name === 'King'){
+          this.undoLastMove();
+          return true;
+        }
+      }
+    }
+
+    this.undoLastMove();
     return false;
+
   }
+
   move(move, store = true){
-    if (store) this.lastMoves.push(move);
-    const [startSq, endSq] = [...this.lastMoves.pop().split('-')];
-    if(startSq === endSq) return;
+    const [startSq, endSq] = [...move.split('-')];
+    if (store) this.lastMoves.push([move, this.pieces[endSq]]);
     this.pieces[endSq] = this.pieces[startSq];
     this.pieces[endSq].square = endSq;
     delete this.pieces[startSq];
@@ -67,8 +136,10 @@ export default class Board{
 
   undoLastMove(){
     if (this.lastMoves.length === 0) return;
-    const [startSq, endSq] = [...this.lastMoves.pop().split('-')];
-    this.move(endSq + '-' + endSq, false);
+    const [move, piece] = [...this.lastMoves.pop()];
+    const [startSq, endSq] = move.split('-');
+    this.move(endSq + '-' + startSq, false);
+    if(piece) this.pieces[endSq] = piece;
   }
 
   squareList(moveableBoards){
