@@ -11,10 +11,10 @@ export default class Piece {
 
   validMoves(){
     const vMoves = [];
-    this.moves().forEach((move)=>{
-      if( !this.board.resultsInCheck(move) &&
-          ( !this.board.pieces[move] ||
-            this.board.pieces[move].color !== this.color)) vMoves.push(move);
+    this.moves().forEach((moveSquare)=>{
+      if( ( !this.board.pieces[moveSquare] || this.board.pieces[moveSquare].color !== this.color)
+          && !this.board.resultsInCheck(this.square + '-' + moveSquare))
+          vMoves.push(moveSquare);
     });
     return vMoves;
   }
