@@ -69,45 +69,23 @@ export default class Board{
 
     const straightOffsets = [ [0, 1], [1, 0], [0, -1], [-1, 0]  ];
     const diagOffsets = [ [1, 1], [-1, 1], [1, -1], [-1, -1] ];
-    const knightOffsets = [ [ 1, -2], [ 1,  2], [-1, -2],  [-2, -1],
-                            [ 2, -1], [ 2,  1], [-2,  1],  [-1,  2] ];
     const pawnDir = king.color === 'w' ? 1 : -1;
-    const stepOffsets = [ [1, pawnDir], [-1, pawnDir] ].concat(knightOffsets);
-
-    const checkForPiece = (squares, piece) => {
-      if(squares.length !== 0){
-          const lastSquare = squares[squares.length -1];
-          const lastSquares = this.existingSquares[lastSquare[1] === 'L' ?
-              lastSquare.substr(3, 5) : lastSquare.substr(0, 2)];
-
-          for(let j = 0; j < lastSquares.length; j++){
-            const possPiece = this.pieces[lastSquares[j]];
-            if(possPiece && possPiece.color !== king.color){
-              const pieceType = possPiece.constructor.name;
-              if(pieceType === piece ||
-                  ( (piece === 'Rook' || piece === 'Bishop')
-                  && pieceType === 'Queen' )
-               ) return true;
-            }
-
-          }
-      }
-      return false;
-    };
-
-
+    //pawn attack plus knight attack offsets
+    const stepOffsets = [ [1, pawnDir], [-1, pawnDir], [ 1, -2], [ 1,  2],
+                [-1, -2],  [-2, -1], [ 2, -1], [ 2,  1], [-2,  1],  [-1,  2] ];
 
     for(let i = 0; i < 4; i++){
       const straightMoves = king.slideMoves([straightOffsets[i]]);
       const diagMoves = king.slideMoves([diagOffsets[i]]);
 
-      if(checkForPiece(straightMoves, 'Rook') ||
-          checkForPiece(diagMoves, 'Bishop'))  return true;
+      if(this.checkForPiece(straightMoves, 'Rook', color) ||
+          this.checkForPiece(diagMoves, 'Bishop', color))  return true;
     }
 
     for(let i = 0; i < stepOffsets.length; i++){
       const piece = i < 2 ? 'Pawn' : 'Knight';
-      if (checkForPiece(king.getSquares(stepOffsets[i]), piece)) return true;
+      if (this.checkForPiece(king.getSquares(stepOffsets[i]), piece, color))
+        return true;
     }
 
     //if it's the kings move then his moveset might include the other king
@@ -123,6 +101,27 @@ export default class Board{
 
     return false;
 
+  }
+
+  checkForPiece(squares, piece, color) {
+    if(squares.length !== 0){
+        const lastSquare = squares[squares.length -1];
+        const lastSquares = this.existingSquares[lastSquare[1] === 'L' ?
+            lastSquare.substr(3, 5) : lastSquare.substr(0, 2)];
+
+        for(let j = 0; j < lastSquares.length; j++){
+          const possPiece = this.pieces[lastSquares[j]];
+          if(possPiece && possPiece.color !== color){
+            const pieceType = possPiece.constructor.name;
+            if(pieceType === piece ||
+                ( (piece === 'Rook' || piece === 'Bishop')
+                && pieceType === 'Queen' )
+             ) return true;
+          }
+
+        }
+    }
+    return false;
   }
 
   move(move, store = true){
