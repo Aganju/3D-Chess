@@ -57,8 +57,15 @@ export default class Board{
   }
 
   resultsInCheck(move){
-    const pieceColor = this.pieces[move.split('-')[0]].color;
-    const king = this.kings[pieceColor];
+
+    this.move(move);
+    const result = this.inCheck(this.pieces[move.split('-')[1]].color);
+    this.undoLastMove();
+    return result;
+  }
+
+  inCheck(color){
+    const king = this.kings[color];
 
     const straightOffsets = [ [0, 1], [1, 0], [0, -1], [-1, 0]  ];
     const diagOffsets = [ [1, 1], [-1, 1], [1, -1], [-1, -1] ];
@@ -88,40 +95,32 @@ export default class Board{
       return false;
     };
 
-    this.move(move);
+
 
     for(let i = 0; i < 4; i++){
       const straightMoves = king.slideMoves([straightOffsets[i]]);
       const diagMoves = king.slideMoves([diagOffsets[i]]);
 
-      if(checkForPiece(straightMoves, 'Rook') || checkForPiece(diagMoves, 'Bishop')){
-        this.undoLastMove();
-        return true;
-      }
-
+      if(checkForPiece(straightMoves, 'Rook') ||
+          checkForPiece(diagMoves, 'Bishop'))  return true;
     }
 
     for(let i = 0; i < stepOffsets.length; i++){
       const piece = i < 2 ? 'Pawn' : 'Knight';
-      if (checkForPiece(king.getSquares(stepOffsets[i]), piece)){
-        this.undoLastMove();
-        return true;
-      }
+      if (checkForPiece(king.getSquares(stepOffsets[i]), piece)) return true;
     }
 
     //if it's the kings move then his moveset might include the other king
-    if(this.pieces[move.split('-')[1]] === king){
+    if(this.lastMoves.slice(-1)[0][0].split('-')[1] === king.square){
       const kingMoves = king.moves();
       for(let i = 0; i < kingMoves.length; i++){
         const piece = this.pieces[kingMoves[i]];
         if(piece && piece.constructor.name === 'King'){
-          this.undoLastMove();
           return true;
         }
       }
     }
 
-    this.undoLastMove();
     return false;
 
   }
