@@ -64,6 +64,16 @@ export default class Board{
     return result;
   }
 
+  inCheckmate(color){
+    const allPieceSquares = Object.keys(this.pieces);
+    for(let i = 0; i < allPieceSquares.length; i++){
+      const piece = this.pieces[allPieceSquares[i]];
+      if(piece.color === color && piece.validMoves().length > 0)
+       return false;
+    }
+    return true;
+  }
+
   inCheck(color){
     const king = this.kings[color];
 
