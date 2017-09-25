@@ -15,12 +15,15 @@ export default class Pawn extends Piece {
 
     let unblocked = true;
     forwardMoves.forEach((sq)=>{
-      if(!this.board.pieces[sq]) allMoves.push(sq);
-      else unblocked = false;
+      if(this.board.pieces[sq]) unblocked = false;
     });
 
     if (this.square === this.homeSquare && unblocked)
     forwardMoves = forwardMoves.concat(this.getSquares([0, this.dir * 2]));
+
+    forwardMoves.forEach((sq)=>{
+      if(!this.board.pieces[sq]) allMoves.push(sq);
+    });
 
     const diagonalMoves = this.getSquares([-1, this.dir]).concat(
         this.getSquares([1, this.dir])
