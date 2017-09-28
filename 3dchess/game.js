@@ -40,7 +40,7 @@ class Game{
     this.visualBoard.removeGreySquares();
     if(square !== this.selectedSquare){
       this.logicBoard.move(this.selectedSquare + '-' + square);
-      this.visualBoard.move(this.selectedSquare + '-' + square);
+      this.visualBoard.position(this.logicBoard.position());
     }
     this.selectedSquare = null;
 

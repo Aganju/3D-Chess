@@ -198,7 +198,7 @@ class Game{
     this.visualBoard.removeGreySquares();
     if(square !== this.selectedSquare){
       this.logicBoard.move(this.selectedSquare + '-' + square);
-      this.visualBoard.move(this.selectedSquare + '-' + square);
+      this.visualBoard.position(this.logicBoard.position());
     }
     this.selectedSquare = null;
 
@@ -333,6 +333,16 @@ class Board{
 
       }
     });
+  }
+
+  position(){
+    const pos = {};
+    Object.keys(this.pieces).forEach((sqr) => {
+      const pieceName = this.pieces[sqr].constructor.name;
+      pos[sqr] = this.pieces[sqr].color +
+                (pieceName === 'Knight' ? 'N' : pieceName[0] );
+    });
+    return pos;
   }
 
   resultsInCheck(move){

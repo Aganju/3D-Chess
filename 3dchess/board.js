@@ -56,6 +56,16 @@ export default class Board{
     });
   }
 
+  position(){
+    const pos = {};
+    Object.keys(this.pieces).forEach((sqr) => {
+      const pieceName = this.pieces[sqr].constructor.name;
+      pos[sqr] = this.pieces[sqr].color +
+                (pieceName === 'Knight' ? 'N' : pieceName[0] );
+    });
+    return pos;
+  }
+
   resultsInCheck(move){
 
     this.move(move);
