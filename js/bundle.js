@@ -159,7 +159,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  new Game('boards', undefined, 'continueGame');
+  document.getElementById('boards').setAttribute("style",
+  `height:${window.innerHeight - 10}px;
+  width:${(window.innerHeight - 10) * 4 / 3}px`);
+
+  const g = new Game('boards', undefined, 'continueGame');
+  const helpText = {
+    free: "Free place allows you to see the move of any piece based on it's current position but you can place it anywhere",
+    play: "Play against a randomly moving AI, be careful about putting him in check though!"
+  }
+
+  document.getElementById('free').addEventListener('click', g.switchMode.bind(g));
+  document.getElementById('play').addEventListener('click', g.switchMode.bind(g));
+  document.getElementById('start').addEventListener('click', g.startPosition.bind(g));
+
+  document.getElementById('free').addEventListener('mouseover',() =>{
+    document.getElementById('info').innerText = helpText.free;
+  });
+  document.getElementById('play').addEventListener('mouseover',() =>{
+    document.getElementById('info').innerText = helpText.play;
+  });
 });
 
 
@@ -186,11 +205,20 @@ class Game{
     });
   }
 
+  startPosition(){
+    this.visualBoard.removeGreySquares();
+    this.selectedSquare = null;
+    this.visualBoard.position('start');
+    setTimeout(() => this.logicBoard.initializeBoard(this.visualBoard.position()), 1000);
+  }
   selectSquare(square){
     this.visualBoard.greySquare(square, 0xFFFFFF);
     this.validMoves = this.logicBoard.pieces[square].validMoves();
     this.validMoves.forEach(
-      (sq) => this.visualBoard.greySquare(sq, 0xFFF000));
+      (sq) => {
+        const color = this.logicBoard.pieces[sq] ? 0xC80004 : 0xFFF000;
+        this.visualBoard.greySquare(sq, color);
+      });
     this.selectedSquare= square;
   }
 
@@ -201,7 +229,6 @@ class Game{
       this.visualBoard.position(this.logicBoard.position());
     }
     this.selectedSquare = null;
-
   }
 
   continueGame(square, piece){
@@ -217,7 +244,7 @@ class Game{
         this.makeMove(square);
         if(!cancelMove)this.flipPlayer();
       }
-    }//check if piece is seleted and color matches
+    }//check if piece is selected and color matches
     else if( piece && piece[0] === this.currentPlayer){
       this.selectSquare(square);
     }
@@ -225,13 +252,16 @@ class Game{
 
   aiPlayer(){
     const pieces = Object.values(this.logicBoard.pieces);
-    let validMoves, piece = pieces[Math.round(Math.random()*(pieces.length-1))];
+    let idx = Math.floor(Math.random()*(pieces.length));
+    let validMoves, piece = pieces[idx];
     while(piece.color !== this.currentPlayer ||
           (validMoves = piece.validMoves()).length === 0){
-      piece = pieces[Math.round(Math.random()*pieces.length-1)];
+      idx = Math.floor(Math.random()*(pieces.length));
+      console.log(idx);
+      piece = pieces[idx];
     }
     this.selectSquare(piece.square);
-    this.makeMove(validMoves[Math.round(Math.random()*(validMoves.length-1))]);
+    this.makeMove(validMoves[Math.floor(Math.random()*(validMoves.length))]);
   }
 
   freePlace(square, piece){
@@ -240,13 +270,20 @@ class Game{
       this.makeMove(square);
     }
     else if (piece) {
-      this.selectSquare();
+      this.selectSquare(square);
     }
 
   }
 
   flipPlayer(){
     this.currentPlayer = this.currentPlayer === 'w' ? 'b' : 'w';
+    if(this.logicBoard.inCheck(this.currentPlayer) &&
+        this.logicBoard.inCheckmate(this.currentPlayer)){
+          document.getElementById('info').innerText = "CHECKMATE! Congrats you win!";
+          setTimeout(() => this.startPosition(), 5000);
+           this.currentPlayer = 'w'
+          return;
+        }
     if(this.players[this.currentPlayer] === 'AI'){
       setTimeout(() => {
         this.aiPlayer();
@@ -254,8 +291,9 @@ class Game{
       }, 1000);
     }
   }
-  switchMode(mode){
-
+  switchMode(){
+    this.moveHandler = this.moveHandler === this. freePlace ?
+      this.continueGame : this.freePlace;
   }
 
   handleBoardClick(square, piece, currPos, currOrientation){
@@ -306,6 +344,7 @@ class Board{
 
 
   initializeBoard(position){
+    this.pieces = {};
     Object.keys(position).forEach((square) => {
       const color = position[square][0];
       switch (position[square][1]) {
