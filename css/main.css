@@ -1,29 +1,43 @@
+html, body{
+  height: 100%;
+}
+
 body{
-    font-family: sans-serif;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
     padding: 0 20px 0;
     display: flex;
     flex-wrap: wrap;
     background: #000;
     color: white;
+    align-items: center;
     justify-content: center;
 }
 
-#header{
-    width: 100%;
+#sidebar{
+    height: 100%;
     display: flex;
+    text-align: center;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
 }
 
 h1{
-    font-size: 45px;    
+    font-size: 45px;
+    margin-bottom: 0;
+    margin-top: 40px;
 }
 
 #links{
     font-size: 50px;
+    margin-bottom: 50px;
 }
 
-.fa{
+p{
+  max-width: 100px;
+  text-align: center;
+}
+a{
     color: white;
 }
 
@@ -32,18 +46,28 @@ h1{
 }
 
 #controls{
-    list-style: none;
+  height: 90%;
+  margin-left: 10px;
 }
 
-#controls li{
+#controls, #modes{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#controls button{
     border: 1px solid #ffffff;
     border-radius: 3px;
-    padding: 5px;
-    
+    font-size: 17px;
+    padding: 10px;
+    margin-bottom: 30px;
+    color: #ffffff;
+    background: transparent;
 }
 
-#controls li:hover{
-    cursor: pointer;    
+#controls button:hover{
+    cursor: pointer;
     background-color: #fff;
     color: #000;
 }
