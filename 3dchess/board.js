@@ -27,6 +27,7 @@ export default class Board{
 
 
   initializeBoard(position){
+    this.pieces = {};
     Object.keys(position).forEach((square) => {
       const color = position[square][0];
       switch (position[square][1]) {
