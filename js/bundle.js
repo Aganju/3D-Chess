@@ -159,36 +159,111 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  let selectedSquare;
-  const pickPiece = (src, piece, currPos, currOrientation) => {
-    boards.greySquare(src, 0xFFFFFF);
-    if(selectedSquare ){
-      boards.removeGreySquares();
-      if(src != selectedSquare){
-        board.move(selectedSquare + '-' + src);
-        boards.move(selectedSquare + '-' + src);
+  new Game('boards', undefined, 'continueGame');
+});
+
+
+class Game{
+  constructor(container, position = 'start', gameType = 'freePlace'){
+    this.container = container;
+    this.visualBoard = this.initializeVisualBoard(position);
+    this.logicBoard = new __WEBPACK_IMPORTED_MODULE_0__board_js__["a" /* default */](this.visualBoard.position());
+    this.moveHandler = this[gameType];
+    this.draggable = false;
+    this.players = {w: 'human', b: 'AI'};
+    this.currentPlayer = 'w';
+  }
+
+  initializeVisualBoard(position){
+    return new ChessBoard3(this.container, {
+      draggable: true,
+      position: position,
+      onDragStart: this.handleBoardClick.bind(this),
+      showErrors: 'console',
+      zoomControls: true,
+      backgroundColor: 0x000000,
+      notationColor: 0xFFFFFF
+    });
+  }
+
+  selectSquare(square){
+    this.visualBoard.greySquare(square, 0xFFFFFF);
+    this.validMoves = this.logicBoard.pieces[square].validMoves();
+    this.validMoves.forEach(
+      (sq) => this.visualBoard.greySquare(sq, 0xFFF000));
+    this.selectedSquare= square;
+  }
+
+  makeMove(square){
+    this.visualBoard.removeGreySquares();
+    if(square !== this.selectedSquare){
+      this.logicBoard.move(this.selectedSquare + '-' + square);
+      this.visualBoard.move(this.selectedSquare + '-' + square);
+    }
+    this.selectedSquare = null;
+
+  }
+
+  continueGame(square, piece){
+    if (this.selectedSquare ){
+      const cancelMove = (square === this.selectedSquare);
+      let validMove = cancelMove;
+      let i = 0;
+      while (!validMove && i < this.validMoves.length) {
+        if(this.validMoves[i] === square) validMove = true;
+        i+=1;
       }
-      selectedSquare = null;
+      if(validMove ){
+        this.makeMove(square);
+        if(!cancelMove)this.flipPlayer();
+      }
+    }//check if piece is seleted and color matches
+    else if( piece && piece[0] === this.currentPlayer){
+      this.selectSquare(square);
+    }
+  }
+
+  aiPlayer(){
+    const pieces = Object.values(this.logicBoard.pieces);
+    let validMoves, piece = pieces[Math.round(Math.random()*(pieces.length-1))];
+    while(piece.color !== this.currentPlayer ||
+          (validMoves = piece.validMoves()).length === 0){
+      piece = pieces[Math.round(Math.random()*pieces.length-1)];
+    }
+    this.selectSquare(piece.square);
+    this.makeMove(validMoves[Math.round(Math.random()*(validMoves.length-1))]);
+  }
+
+  freePlace(square, piece){
+    this.visualBoard.greySquare(square, 0xFFFFFF);
+    if(this.selectedSquare ){
+      this.makeMove(square);
     }
     else if (piece) {
-      board.pieces[src].validMoves().forEach((sq) => boards.greySquare(sq, 0xFFF000));
-      selectedSquare= src;
+      this.selectSquare();
     }
-    return false;
-  };
-  var boards = new ChessBoard3('boards', {
-    draggable: true,
-    position: 'start',
-    onDragStart: pickPiece,
-    showErrors: 'console',
-    zoomControls: true,
-    backgroundColor: 0x000000,
-    notationColor: 0xFFFFFF
-  });
 
-  var board = new __WEBPACK_IMPORTED_MODULE_0__board_js__["a" /* default */](boards.position());
+  }
 
-});
+  flipPlayer(){
+    this.currentPlayer = this.currentPlayer === 'w' ? 'b' : 'w';
+    if(this.players[this.currentPlayer] === 'AI'){
+      setTimeout(() => {
+        this.aiPlayer();
+        this.flipPlayer();
+      }, 1000);
+    }
+  }
+  switchMode(mode){
+
+  }
+
+  handleBoardClick(square, piece, currPos, currOrientation){
+    this.moveHandler(square, piece);
+    return this.draggable;
+  }
+
+}
 
 
 /***/ }),
@@ -261,73 +336,81 @@ class Board{
   }
 
   resultsInCheck(move){
-    const pieceColor = this.pieces[move.split('-')[0]].color;
-    const king = this.kings[pieceColor];
+
+    this.move(move);
+    const result = this.inCheck(this.pieces[move.split('-')[1]].color);
+    this.undoLastMove();
+    return result;
+  }
+
+  inCheckmate(color){
+    const allPieceSquares = Object.keys(this.pieces);
+    for(let i = 0; i < allPieceSquares.length; i++){
+      const piece = this.pieces[allPieceSquares[i]];
+      if(piece.color === color && piece.validMoves().length > 0)
+       return false;
+    }
+    return true;
+  }
+
+  inCheck(color){
+    const king = this.kings[color];
 
     const straightOffsets = [ [0, 1], [1, 0], [0, -1], [-1, 0]  ];
     const diagOffsets = [ [1, 1], [-1, 1], [1, -1], [-1, -1] ];
-    const knightOffsets = [ [ 1, -2], [ 1,  2], [-1, -2],  [-2, -1],
-                            [ 2, -1], [ 2,  1], [-2,  1],  [-1,  2] ];
     const pawnDir = king.color === 'w' ? 1 : -1;
-    const stepOffsets = [ [1, pawnDir], [-1, pawnDir] ].concat(knightOffsets);
-
-    const checkForPiece = (squares, piece) => {
-      if(squares.length !== 0){
-          const lastSquare = squares[squares.length -1];
-          const lastSquares = this.existingSquares[lastSquare[1] === 'L' ?
-              lastSquare.substr(3, 5) : lastSquare.substr(0, 2)];
-
-          for(let j = 0; j < lastSquares.length; j++){
-            const possPiece = this.pieces[lastSquares[j]];
-            if(possPiece && possPiece.color !== king.color){
-              const pieceType = possPiece.constructor.name;
-              if(pieceType === piece ||
-                  ( (piece === 'Rook' || piece === 'Bishop')
-                  && pieceType === 'Queen' )
-               ) return true;
-            }
-
-          }
-      }
-      return false;
-    };
-
-    this.move(move);
+    //pawn attack plus knight attack offsets
+    const stepOffsets = [ [1, pawnDir], [-1, pawnDir], [ 1, -2], [ 1,  2],
+                [-1, -2],  [-2, -1], [ 2, -1], [ 2,  1], [-2,  1],  [-1,  2] ];
 
     for(let i = 0; i < 4; i++){
       const straightMoves = king.slideMoves([straightOffsets[i]]);
       const diagMoves = king.slideMoves([diagOffsets[i]]);
 
-      if(checkForPiece(straightMoves, 'Rook') || checkForPiece(diagMoves, 'Bishop')){
-        this.undoLastMove();
-        return true;
-      }
-
+      if(this.checkForPiece(straightMoves, 'Rook', color) ||
+          this.checkForPiece(diagMoves, 'Bishop', color))  return true;
     }
 
     for(let i = 0; i < stepOffsets.length; i++){
       const piece = i < 2 ? 'Pawn' : 'Knight';
-      if (checkForPiece(king.getSquares(stepOffsets[i]), piece)){
-        this.undoLastMove();
+      if (this.checkForPiece(king.getSquares(stepOffsets[i]), piece, color))
         return true;
-      }
     }
 
     //if it's the kings move then his moveset might include the other king
-    if(this.pieces[move.split('-')[1]] === king){
+    if(this.lastMoves.slice(-1)[0][0].split('-')[1] === king.square){
       const kingMoves = king.moves();
       for(let i = 0; i < kingMoves.length; i++){
         const piece = this.pieces[kingMoves[i]];
         if(piece && piece.constructor.name === 'King'){
-          this.undoLastMove();
           return true;
         }
       }
     }
 
-    this.undoLastMove();
     return false;
 
+  }
+
+  checkForPiece(squares, piece, color) {
+    if(squares.length !== 0){
+        const lastSquare = squares[squares.length -1];
+        const lastSquares = this.existingSquares[lastSquare[1] === 'L' ?
+            lastSquare.substr(3, 5) : lastSquare.substr(0, 2)];
+
+        for(let j = 0; j < lastSquares.length; j++){
+          const possPiece = this.pieces[lastSquares[j]];
+          if(possPiece && possPiece.color !== color){
+            const pieceType = possPiece.constructor.name;
+            if(pieceType === piece ||
+                ( (piece === 'Rook' || piece === 'Bishop')
+                && pieceType === 'Queen' )
+             ) return true;
+          }
+
+        }
+    }
+    return false;
   }
 
   move(move, store = true){
@@ -387,8 +470,13 @@ class Pawn extends __WEBPACK_IMPORTED_MODULE_0__piece__["a" /* default */] {
     let forwardMoves = this.getSquares([0, this.dir]);
     if(forwardMoves.length === 0) return [];
 
-    if (this.square === this.homeSquare)
-      forwardMoves = forwardMoves.concat(this.getSquares([0, this.dir * 2]));
+    let unblocked = true;
+    forwardMoves.forEach((sq)=>{
+      if(this.board.pieces[sq]) unblocked = false;
+    });
+
+    if (this.square === this.homeSquare && unblocked)
+    forwardMoves = forwardMoves.concat(this.getSquares([0, this.dir * 2]));
 
     forwardMoves.forEach((sq)=>{
       if(!this.board.pieces[sq]) allMoves.push(sq);
