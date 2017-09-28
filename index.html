@@ -9,12 +9,16 @@
 	<script type="text/javascript" src="js/OrbitControls.js"></script>
 	<script type="text/javascript" src="js/bundle.js"></script>
 	<link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 	<link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
-	<div id='header'>
-		<h1>3D Chess</h1>
+	<div id='sidebar'>
+		<div id='heading'>
+			<h1>3D <br> Chess</h1>
+			<h3>by:<br><a href="http://yemagbe.com">Yemi A.</a></h3>
+		</div>
 		<div id='links'>
 			<a href="http://www.linkedin.com/in/omayemi-agbeyegbe-ba3a4676"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
 			<a href="http://github.com/Aganju"><i class="fa fa-github" aria-hidden="true"></i></a>
@@ -22,9 +26,17 @@
 	</div>
 
 	<div id="boards" style="width: 1000px; height: 750px"></div>
-	<ul id="controls">
-		<li>Free Place</li>
-	</ul>
+	<div id="controls">
+		<div id="modes">
+			<button id='free'>Free Place</button>
+			<button id='play'>Play Game</button>
+		</div>
+		<p id="info"></p>
+
+		<div id="options">
+			<button id='start'>Start Position</button>
+		</div>
+	</div>
 
 
 </body>
